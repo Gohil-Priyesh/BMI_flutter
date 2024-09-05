@@ -78,4 +78,5 @@ class SQLHelper {
     );
     return result.isNotEmpty;
   }
+
 }

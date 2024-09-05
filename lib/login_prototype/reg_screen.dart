@@ -1,4 +1,6 @@
 import 'package:bmi_flutter/login_prototype/loginscreen.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -21,6 +23,13 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _email = TextEditingController();
 
   final TextEditingController _password = TextEditingController();
+
+  final TextEditingController _ConfirmPassword = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  bool showPassword = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -70,73 +79,135 @@ class _SignupPageState extends State<SignupPage> {
                     )
                   ],
                 ),
-                Column(
-                  children: <Widget>[
-                    TextField(
-                      controller: _username,
-                      decoration: InputDecoration(
-                          hintText: "Username",
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        controller: _username,
+                        decoration: InputDecoration(
+                            hintText: "Username",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none),
+                            fillColor: Colors.purple.withOpacity(0.1),
+                            filled: true,
+                            prefixIcon: const Icon(Icons.person)),
+                            validator: (value) {
+                              if(value == null || value.length <= 1 || value.isEmpty){
+                                return "Username should be more then one character";
+                              }
+                              return null;
+                            },
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _email,
+                        decoration: InputDecoration(
+                            hintText: "Email",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none),
+                            fillColor: Colors.purple.withOpacity(0.1),
+                            filled: true,
+                            prefixIcon: const Icon(Icons.email)),
+                        validator: (value){
+                          if(value == null || value.isEmpty){
+                            return "enter Email";
+                          }
+                          /// i don't know how to use this package
+                          /* if(EmailValidator.validate(value.toString())){
+                             return "enter a valid email";
+                           }*/
+                           if(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                               .hasMatch(value)){
+                           }else{
+                             return "enter a valid email Id";
+                           }
+                          return null;
+                          },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _password,
+                        decoration: InputDecoration(
+                          hintText: "Password",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(18),
                               borderSide: BorderSide.none),
                           fillColor: Colors.purple.withOpacity(0.1),
                           filled: true,
-                          prefixIcon: const Icon(Icons.person)),
-                    ),
+                          prefixIcon: const Icon(Icons.password),
+                          suffixIcon: Icon(CupertinoIcons.eye,color: Colors.purple,)
+                        ),
+                        obscureText: true,
+                        validator: (value) {
+                          if( value == null || value.isEmpty || value.length <= 5){
+                            return "enter a valid value";
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        maxLength: 6,
+                      ),
 
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                    TextField(
-                      controller: _email,
-                      decoration: InputDecoration(
-                          hintText: "Email",
+                      TextFormField(
+                        controller: _ConfirmPassword,
+                        decoration: InputDecoration(
+                          hintText: "Confirm Password",
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(18),
                               borderSide: BorderSide.none),
                           fillColor: Colors.purple.withOpacity(0.1),
                           filled: true,
-                          prefixIcon: const Icon(Icons.email)),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    TextField(
-                      controller: _password,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none),
-                        fillColor: Colors.purple.withOpacity(0.1),
-                        filled: true,
-                        prefixIcon: const Icon(Icons.password),
+                          prefixIcon: const Icon(Icons.password),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                                showPassword ?
+                                    Icons.remove_red_eye : Icons.remove_red_eye_outlined
+                            ),
+                            onPressed: (){
+                              setState(() {
+                                showPassword = ! showPassword;
+                              });
+                            },
+                          )
+                        ),
+                        obscureText: true,
+                        validator: (value){
+                          if( value == null || value.isEmpty || value.length < 6 ){
+                            return "enter a valid value";
+                          }
+                          /// make sure to use .text to access the text from the controller or else it wonk work
+                          if(value != _password.text){
+                            return "enter the same password as above";
+                          }
+                          return null;
+                        },
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        maxLength: 6,
                       ),
-                      obscureText: true,
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "Confirm Password",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none),
-                        fillColor: Colors.purple.withOpacity(0.1),
-                        filled: true,
-                        prefixIcon: const Icon(Icons.password),
-                      ),
-                      obscureText: true,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Container(
                     padding: const EdgeInsets.only(top: 3, left: 3),
 
                     child: ElevatedButton(
                       onPressed: () {
-                        _addItem();
-                      },
+                        if(_formKey.currentState!.validate() == true){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfull")));
+                          _addItem();
+                        }
+                        },
                       child: const Text(
                         "Sign up",
                         style: TextStyle(fontSize: 20,color: Colors.white),
