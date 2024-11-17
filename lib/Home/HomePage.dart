@@ -20,6 +20,7 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('BMI'),
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.lightBlue,
       ),
       body: Container(

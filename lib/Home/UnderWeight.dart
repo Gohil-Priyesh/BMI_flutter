@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 
 class Underweight extends StatelessWidget {
@@ -32,3 +33,56 @@ class Underweight extends StatelessWidget {
     );
   }
 }
+*/
+
+
+import 'package:flutter/material.dart';
+
+class Underweight extends StatelessWidget {
+  const Underweight({super.key});
+
+  Future<void> _preloadImage(BuildContext context, String imagePath) async {
+    // Preload the image to avoid flickering.
+    await precacheImage(AssetImage(imagePath), context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const imagePath = 'assets/image/Underweight.jpg';
+    return Scaffold(
+      body: FutureBuilder<void>(
+        future: _preloadImage(context, imagePath),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 100),
+                  SizedBox(
+                    height: 300, // Ensure proper size for the image.
+                    child: Image(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 11),
+                  Text(
+                    'Underweight',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25,
+                      color: Colors.yellow,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+}
+

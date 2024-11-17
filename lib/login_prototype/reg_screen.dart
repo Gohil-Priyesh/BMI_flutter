@@ -144,7 +144,6 @@ class _SignupPageState extends State<SignupPage> {
                           fillColor: Colors.purple.withOpacity(0.1),
                           filled: true,
                           prefixIcon: const Icon(Icons.password),
-                          suffixIcon: Icon(CupertinoIcons.eye,color: Colors.purple,)
                         ),
                         obscureText: true,
                         validator: (value) {
@@ -169,17 +168,7 @@ class _SignupPageState extends State<SignupPage> {
                           fillColor: Colors.purple.withOpacity(0.1),
                           filled: true,
                           prefixIcon: const Icon(Icons.password),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                                showPassword ?
-                                    Icons.remove_red_eye : Icons.remove_red_eye_outlined
-                            ),
-                            onPressed: (){
-                              setState(() {
-                                showPassword = ! showPassword;
-                              });
-                            },
-                          )
+
                         ),
                         obscureText: true,
                         validator: (value){
